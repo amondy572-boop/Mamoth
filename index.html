@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mammoth Science Quiz Adventure! 🐘🧪</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FFF9F0',
+                        peach: '#FFE8D8',
+                        skyblue: '#CFEFF5',
+                        aqua: '#AEE5DD',
+                        lavender: '#E5DDFB',
+                        coral: '#FF9D91',
+                        butter: '#FFE28A',
+                        darkbrown: '#453A39',
+                        graybrown: '#827875',
+                        successgreen: '#70C9A0',
+                        errorcoral: '#EF817A',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        body {
+            background-color: #FFF9F0;
+            color: #453A39;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .clay-card {
+            background: #FFE8D8;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(69, 58, 57, 0.12), 0 8px 10px -6px rgba(69, 58, 57, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .clay-card-interactive:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px -5px rgba(69, 58, 57, 0.18), 0 10px 12px -6px rgba(69, 58, 57, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .clay-card-interactive:active {
+            transform: scale(0.98);
+        }
+
+        .clay-button {
+            border-radius: 16px;
+            box-shadow: 0 6px 15px -3px rgba(69, 58, 57, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
+        }
+        .clay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -3px rgba(69, 58, 57, 0.2);
+        }
+        .clay-button:active {
+            transform: scale(0.96);
+        }
+
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-gentle {
+            animation: bounce-gentle 2.2s ease-in-out infinite;
+        }
+
+        @keyframes wobble-soft {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+        .animate-wobble {
+            animation: wobble-soft 0.4s ease-in-out;
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes slide-in-up {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slide-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-butter selection:text-darkbrown">
+
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-40">
+        <div class="absolute top-10 left-10 w-24 h-24 rounded-full bg-skyblue filter blur-xl"></div>
+        <div class="absolute bottom-12 right-12 w-32 h-32 rounded-full bg-butter filter blur-xl"></div>
+        <div class="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-lavender filter blur-xl"></div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app" class="relative z-10 flex flex-col min-h-screen max-w-4xl mx-auto w-full p-4 sm:p-6 justify-between">
+        
+        <!-- HEADER / TOP NAV -->
+        <header class="flex items-center justify-between mb-6">
+            <button onclick="goToHome()" class="clay-button px-4 py-2.5 bg-skyblue text-darkbrown font-bold flex items-center gap-2 text-sm sm:text-base cursor-pointer">
+                🏠 <span class="hidden sm:inline">Home</span>
+            </button>
+            
+            <div id="quiz-header-info" class="text-center hidden">
+                <span id="topic-badge" class="px-3 py-1 bg-lavender text-darkbrown rounded-full text-xs sm:text-sm font-bold shadow-inner">Topic</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="toggleSound()" id="sound-btn" class="clay-button p-2.5 bg-butter text-darkbrown font-bold text-lg cursor-pointer" title="Toggle Sound">
+                    🔊
+                </button>
+                <button onclick="openSettings()" class="clay-button p-2.5 bg-peach text-darkbrown font-bold text-lg cursor-pointer" title="Settings">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <main id="main-content" class="flex-1 flex flex-col justify-center items-center w-full my-auto">
+            <!-- Dynamically populated via JavaScript -->
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="mt-8 text-center text-xs sm:text-sm text-graybrown font-medium">
+            🐘 The Mammoth Science Academy • Fun Learning for Kids (Ages 5-10)
+        </footer>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="fixed inset-0 bg-darkbrown/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="clay-card bg-cream p-6 sm:p-8 max-w-md w-full animate-pop border-4 border-peach">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-extrabold text-darkbrown">⚙️ Settings</h3>
+                <button onclick="closeSettings()" class="clay-button px-3 py-1 bg-peach text-darkbrown font-bold cursor-pointer">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-3 bg-white/60 rounded-2xl">
+                    <span class="font-bold text-darkbrown">🔊 Sound Effects</span>
+                    <input type="checkbox" id="setting-sound" checked onchange="updateSettings()" class="w-6 h-6 accent-coral rounded-lg cursor-pointer">
+                </div>
+                <div class="flex items-center justify-between p-3 bg-white/60 rounded-2xl">
+                    <span class="font-bold text-darkbrown">🐢 Reduced Motion</span>
+                    <input type="checkbox" id="setting-motion" onchange="updateSettings()" class="w-6 h-6 accent-coral rounded-lg cursor-pointer">
+                </div>
+                <div class="flex items-center justify-between p-3 bg-white/60 rounded-2xl">
+                    <span class="font-bold text-darkbrown">🔤 Large Text Mode</span>
+                    <input type="checkbox" id="setting-text" onchange="updateSettings()" class="w-6 h-6 accent-coral rounded-lg cursor-pointer">
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <button onclick="closeSettings()" class="clay-button w-full py-3 bg-successgreen text-white font-extrabold text-lg cursor-pointer">Save & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizzesData = [
+            {
+                id: 1,
+                title: "Quest 1: Matter & Structure",
+                icon: "🧪",
+                color: "bg-peach",
+                description: "Explore matter, atoms, molecules, and the building blocks of science!",
+                questions: [
+                    {
+                        q: "Anything that has mass and occupies space is known as:",
+                        choices: ["Matter", "Energy", "Velocity"],
+                        correct: 0,
+                        hint: "Everything around you that takes up space!",
+                        feedback: "Correct! Matter is anything with mass and volume."
+                    },
+                    {
+                        q: "The building and structural unit of any matter is the:",
+                        choices: ["Atom", "Molecule", "Cell"],
+                        correct: 0,
+                        hint: "It is the fundamental unit of chemical elements.",
+                        feedback: "Spot on! The atom is the building unit of matter."
+                    },
+                    {
+                        q: "The first atomic model formulated on experimental basis was by:",
+                        choices: ["Rutherford", "Dalton", "Bohr"],
+                        correct: 0,
+                        hint: "He performed the famous gold foil experiment.",
+                        feedback: "Awesome! Rutherford introduced the first experimental nuclear model."
+                    },
+                    {
+                        q: "Positively charged particles found inside the nucleus of the atom are:",
+                        choices: ["Protons", "Electrons", "Neutrons"],
+                        correct: 0,
+                        hint: "They have a positive electric charge.",
+                        feedback: "Correct! Protons carry positive charge inside the nucleus."
+                    },
+                    {
+                        q: "Subatomic particles whose mass can be neglected but their charge cannot be neglected are:",
+                        choices: ["Electrons", "Protons", "Neutrons"],
+                        correct: 0,
+                        hint: "They orbit outside the nucleus in energy levels.",
+                        feedback: "Right! Electrons have extremely tiny mass compared to protons."
+                    },
+                    {
+                        q: "The number of positive protons found in the nucleus of an element's atom is called:",
+                        choices: ["Atomic number", "Mass number", "Neutron count"],
+                        correct: 0,
+                        hint: "Denoted by letter Z.",
+                        feedback: "Correct! That is the atomic number."
+                    },
+                    {
+                        q: "The sum of the numbers of protons and neutrons found inside the nucleus of an atom is:",
+                        choices: ["Mass number", "Atomic number", "Electron number"],
+                        correct: 0,
+                        hint: "Also known as nucleons count.",
+                        feedback: "Spot on! The sum gives the mass number."
+                    },
+                    {
+                        q: "All of the following are considered matter, except:",
+                        choices: ["Light", "Air", "Sand", "Table salt"],
+                        correct: 0,
+                        hint: "Think about what has mass and occupies space vs. pure energy.",
+                        feedback: "Correct! Light is energy, not matter."
+                    },
+                    {
+                        q: "The mass of a proton approximately equals:",
+                        choices: ["1 g", "1 kg", "1 mg"],
+                        correct: 0,
+                        hint: "In standard atomic mass units relative scale.",
+                        feedback: "Right! Approximately 1 atomic mass unit."
+                    },
+                    {
+                        q: "The chemical symbol for the sulphur element is:",
+                        choices: ["S", "Ca", "Si", "P"],
+                        correct: 0,
+                        hint: "Starts with the letter S.",
+                        feedback: "Correct! Sulphur is represented by S."
+                    },
+                    {
+                        q: "Which of the following represents an element and its correct symbol?",
+                        choices: ["Magnesium: Mg", "Sodium: S", "Phosphorus: F", "Potassium: Po"],
+                        correct: 0,
+                        hint: "Check magnesium's symbol.",
+                        feedback: "Spot on! Magnesium symbol is Mg."
+                    },
+                    {
+                        q: "The element responsible for developing strong roots in plants is:",
+                        choices: ["Phosphorus", "Nitrogen", "Calcium", "Oxygen"],
+                        correct: 0,
+                        hint: "Often found in NPK fertilizers for root strength.",
+                        feedback: "Correct! Phosphorus helps develop strong roots."
+                    },
+                    {
+                        q: "Some fertilizers contain nitrogen which is necessary for:",
+                        choices: ["The greening of plant leaves", "Root growth", "Fruit ripening"],
+                        correct: 0,
+                        hint: "Gives leaves their vibrant green color.",
+                        feedback: "Right! Nitrogen is crucial for leaf greening."
+                    },
+                    {
+                        q: "What is the symbol of the element X whose nucleus contains 8 protons and 8 neutrons?",
+                        choices: ["<sup>16</sup><sub>8</sub>O", "<sup>8</sup><sub>8</sub>X", "<sup>16</sup><sub>16</sub>S"],
+                        correct: 0,
+                        hint: "Atomic number 8 is Oxygen.",
+                        feedback: "Spot on! That is Oxygen-16."
+                    },
+                    {
+                        q: "The number of negatively charged particles in the aluminum atom <sup>27</sup><sub>13</sub>Al equals:",
+                        choices: ["13", "14", "27", "40"],
+                        correct: 0,
+                        hint: "Neutral atom has electrons equal to protons.",
+                        feedback: "Correct! 13 electrons."
+                    },
+                    {
+                        q: "An element whose mass number is 23 and atomic number is 11 has how many neutrons?",
+                        choices: ["12", "11", "23", "34"],
+                        correct: 0,
+                        hint: "Mass number minus atomic number (23 - 11).",
+                        feedback: "Spot on! 12 neutrons."
+                    },
+                    {
+                        q: "The number of neutrons in the nucleus of potassium <sup>39</sup><sub>19</sub>K is:",
+                        choices: ["20", "19", "39", "58"],
+                        correct: 0,
+                        hint: "39 minus 19.",
+                        feedback: "Correct! 20 neutrons."
+                    },
+                    {
+                        q: "Dalton considered that the atom is:",
+                        choices: ["Indivisible", "Divisible into quarks", "Composed of electrons"],
+                        correct: 0,
+                        hint: "His theory stated atoms couldn't be split.",
+                        feedback: "Right! Dalton viewed atoms as solid indivisible spheres."
+                    },
+                    {
+                        q: "The charge of a proton equals the charge of an electron in:",
+                        choices: ["Magnitude", "Type", "Mass"],
+                        correct: 0,
+                        hint: "Opposite signs, but equal strength.",
+                        feedback: "Correct! Equal in magnitude."
+                    },
+                    {
+                        q: "NPK fertilizer contains nitrogen, potassium, and:",
+                        choices: ["Phosphorus", "Calcium", "Carbon", "Iron"],
+                        correct: 0,
+                        hint: "P stands for this element.",
+                        feedback: "Spot on! NPK stands for Nitrogen, Phosphorus, Potassium."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Quest 2: Energy Levels & Electrons",
+                icon: "⚡",
+                color: "bg-skyblue",
+                description: "Discover electron shells, energy levels, and atomic configurations!",
+                questions: [
+                    {
+                        q: "Imaginary regions where electrons revolve around the nucleus according to their energy are:",
+                        choices: ["Energy levels", "Orbits", "Nucleons"],
+                        correct: 0,
+                        hint: "Also called shells (K, L, M, N).",
+                        feedback: "Correct! Energy levels or shells."
+                    },
+                    {
+                        q: "The symbol (n) in the relation (2n<sup>2</sup>) refers to:",
+                        choices: ["Level number", "Number of protons", "Number of electrons"],
+                        correct: 0,
+                        hint: "1 for K, 2 for L, etc.",
+                        feedback: "Spot on! Level number."
+                    },
+                    {
+                        q: "The second energy level (L) is saturated with how many electrons?",
+                        choices: ["8", "2", "18", "32"],
+                        correct: 0,
+                        hint: "Using 2n<sup>2</sup> where n=2 gives 2(2<sup>2</sup>) = 8.",
+                        feedback: "Correct! L level holds up to 8 electrons."
+                    },
+                    {
+                        q: "In electron configuration, which energy level is filled first?",
+                        choices: ["K", "L", "M", "N"],
+                        correct: 0,
+                        hint: "The closest level to the nucleus.",
+                        feedback: "Right! K level fills first."
+                    },
+                    {
+                        q: "The energy level L in the silicon atom <sup>28</sup><sub>14</sub>Si contains how many electrons?",
+                        choices: ["8", "2", "4", "18"],
+                        correct: 0,
+                        hint: "Silicon has 14 electrons: 2 in K, 8 in L, 4 in M.",
+                        feedback: "Spot on! 8 electrons in L."
+                    },
+                    {
+                        q: "If an aluminum atom contains 13 protons, the highest energy electron will be in which level?",
+                        choices: ["Third (M)", "First (K)", "Second (L)", "Fourth (N)"],
+                        correct: 0,
+                        hint: "Configuration is 2, 8, 3.",
+                        feedback: "Correct! Third level (M)."
+                    },
+                    {
+                        q: "The outermost energy level contains 7 electrons in the atom of:",
+                        choices: ["Fluorine (F)", "Nitrogen (N)", "Sodium (Na)", "Phosphorus (P)"],
+                        correct: 0,
+                        hint: "Atomic number 9.",
+                        feedback: "Right! Fluorine has 7 valence electrons (2, 7)."
+                    },
+                    {
+                        q: "An element whose outermost energy level M is completely filled with electrons has atomic number:",
+                        choices: ["18", "3", "8", "13"],
+                        correct: 0,
+                        hint: "K=2, L=8, M=18? Wait, if M is outermost and completely filled with 8 (octet rule), 2+8+8 = 18 (argon).",
+                        feedback: "Spot on! Atomic number 18 (Argon)."
+                    },
+                    {
+                        q: "The lowest energy level in the atom is the:",
+                        choices: ["K level", "L level", "M level", "N level"],
+                        correct: 0,
+                        hint: "Closest to the nucleus.",
+                        feedback: "Correct! K level has the lowest energy."
+                    },
+                    {
+                        q: "The energy of the level increases as it gets:",
+                        choices: ["Farther away from the nucleus", "Closer to the nucleus", "Smaller"],
+                        correct: 0,
+                        hint: "Outer shells have higher energy.",
+                        feedback: "Spot on! Energy increases with distance."
+                    },
+                    {
+                        q: "The energy level K is saturated with how many electrons?",
+                        choices: ["2", "8", "18", "32"],
+                        correct: 0,
+                        hint: "2(1<sup>2</sup>) = 2.",
+                        feedback: "Correct! K holds 2 electrons."
+                    },
+                    {
+                        q: "An element whose energy level M contains 3 electrons and 14 neutrons has atomic number:",
+                        choices: ["13", "14", "3", "27"],
+                        correct: 0,
+                        hint: "Configuration 2, 8, 3 means total electrons = 13.",
+                        feedback: "Right! Atomic number is 13 (Aluminum)."
+                    },
+                    {
+                        q: "The number of energy levels in the heaviest known atoms is:",
+                        choices: ["7", "4", "9", "5"],
+                        correct: 0,
+                        hint: "K, L, M, N, O, P, Q equals 7 principal energy levels.",
+                        feedback: "Spot on! 7 energy levels."
+                    },
+                    {
+                        q: "The outermost energy level of magnesium <sup>24</sup><sub>12</sub>Mg contains how many electrons?",
+                        choices: ["2", "1", "8", "7"],
+                        correct: 0,
+                        hint: "Configuration is 2, 8, 2.",
+                        feedback: "Correct! 2 electrons in the outer shell."
+                    },
+                    {
+                        q: "The closest energy level to the nucleus is:",
+                        choices: ["K", "L", "M", "N"],
+                        correct: 0,
+                        hint: "The first shell.",
+                        feedback: "Spot on! Level K."
+                    },
+                    {
+                        q: "The third energy level lies between levels:",
+                        choices: ["L and N", "K and L", "M and N"],
+                        correct: 0,
+                        hint: "K(1), L(2), M(3), N(4). M is between L and N.",
+                        feedback: "Right! Between L and N."
+                    },
+                    {
+                        q: "Higher energy levels are filled with electrons:",
+                        choices: ["After lower levels are saturated", "Before lower levels", "Randomly"],
+                        correct: 0,
+                        hint: "Aufbau principle: fill from lowest to highest.",
+                        feedback: "Correct! After lower levels are filled."
+                    },
+                    {
+                        q: "The number of electrons that saturate energy level M is:",
+                        choices: ["18", "8", "32", "2"],
+                        correct: 0,
+                        hint: "2(3<sup>2</sup>) = 18.",
+                        feedback: "Spot on! 18 electrons."
+                    },
+                    {
+                        q: "The number of energy levels occupied by electrons in sodium <sup>23</sup><sub>11</sub>Na is:",
+                        choices: ["3", "2", "4", "1"],
+                        correct: 0,
+                        hint: "Configuration 2, 8, 1.",
+                        feedback: "Correct! 3 energy levels."
+                    },
+                    {
+                        q: "The energy of level L is ........... the energy of level K.",
+                        choices: ["Greater than", "Less than", "Equal to"],
+                        correct: 0,
+                        hint: "L is farther out than K.",
+                        feedback: "Spot on! L has higher energy than K."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Quest 3: Isotopes & Atoms",
+                icon: "🌟",
+                color: "bg-aqua",
+                description: "Unravel isotopes, hydrogen varieties, and atomic variations!",
+                questions: [
+                    {
+                        q: "Different forms of atoms of the same element that have the same atomic number but differ in mass number are:",
+                        choices: ["Isotopes", "Ions", "Isomers", "Isobars"],
+                        correct: 0,
+                        hint: "Same protons, different neutrons.",
+                        feedback: "Correct! Isotopes."
+                    },
+                    {
+                        q: "Deuterium is considered an isotope of which element?",
+                        choices: ["Hydrogen", "Carbon", "Oxygen", "Nitrogen"],
+                        correct: 0,
+                        hint: "Heavy hydrogen.",
+                        feedback: "Spot on! Hydrogen."
+                    },
+                    {
+                        q: "The only hydrogen isotope whose nucleus does not contain neutrons is:",
+                        choices: ["Protium", "Deuterium", "Tritium", "Helium"],
+                        correct: 0,
+                        hint: "Ordinary light hydrogen <sup>1</sup><sub>1</sub>H.",
+                        feedback: "Right! Protium."
+                    },
+                    {
+                        q: "Isotopes of the same element agree in all of the following except:",
+                        choices: ["Number of nucleons", "Atomic number", "Number of protons", "Number of electrons"],
+                        correct: 0,
+                        hint: "Mass number differs because neutron count differs.",
+                        feedback: "Correct! They differ in mass number / nucleons."
+                    },
+                    {
+                        q: "Which of the following represents an isotope of oxygen <sup>16</sup><sub>8</sub>O?",
+                        choices: ["Oxygen-18", "Sulphur-16", "Hydrogen-2", "Carbon-12"],
+                        correct: 0,
+                        hint: "Same atomic number 8, different mass number.",
+                        feedback: "Spot on! Oxygen-18."
+                    },
+                    {
+                        q: "The hydrogen isotope in which the number of protons equals the number of neutrons is:",
+                        choices: ["Deuterium", "Protium", "Tritium"],
+                        correct: 0,
+                        hint: "Mass number 2, 1 proton and 1 neutron.",
+                        feedback: "Correct! Deuterium."
+                    },
+                    {
+                        q: "Chlorine-37 isotope differs from chlorine-35 isotope in that it contains a greater number of:",
+                        choices: ["Neutrons", "Protons", "Electrons", "Energy levels"],
+                        correct: 0,
+                        hint: "Mass difference is due to neutrons.",
+                        feedback: "Right! More neutrons."
+                    },
+                    {
+                        q: "The number of isotopes of the hydrogen element is:",
+                        choices: ["3", "2", "4", "1"],
+                        correct: 0,
+                        hint: "Protium, Deuterium, Tritium.",
+                        feedback: "Spot on! 3 isotopes."
+                    },
+                    {
+                        q: "In the protium atom, the atomic number equals the mass number because:",
+                        choices: ["Its nucleus has no neutrons", "It has 1 electron", "It has no protons"],
+                        correct: 0,
+                        hint: "Neutrons = 0, so protons = nucleons.",
+                        feedback: "Correct! Zero neutrons means Z equals A."
+                    },
+                    {
+                        q: "The number of neutrons is double the number of protons in the nucleus of which isotope?",
+                        choices: ["Tritium", "Protium", "Deuterium"],
+                        correct: 0,
+                        hint: "1 proton and 2 neutrons (mass number 3).",
+                        feedback: "Spot on! Tritium."
+                    },
+                    {
+                        q: "Magnesium-24 isotope is identical to magnesium-25 isotope in the number of:",
+                        choices: ["Protons", "Neutrons", "Nucleons"],
+                        correct: 0,
+                        hint: "Same element means same atomic number.",
+                        feedback: "Right! Same number of protons."
+                    },
+                    {
+                        q: "When does the mass number equal the atomic number?",
+                        choices: ["When the nucleus has no neutrons", "When neutrons equal protons", "Never"],
+                        correct: 0,
+                        hint: "As seen in protium.",
+                        feedback: "Correct! When neutrons are absent."
+                    },
+                    {
+                        q: "The mass number is usually greater than the atomic number because:",
+                        choices: ["The nucleus contains neutrons in addition to protons", "Electrons add mass", "Protons are heavy"],
+                        correct: 0,
+                        hint: "Neutrons add extra mass.",
+                        feedback: "Spot on! Due to the presence of neutrons."
+                    },
+                    {
+                        q: "The atom is electrically neutral in its normal state because:",
+                        choices: ["Number of protons equals number of electrons", "Neutrons balance protons", "It has no charge"],
+                        correct: 0,
+                        hint: "Positive charges equal negative charges.",
+                        feedback: "Right! Protons equal electrons."
+                    },
+                    {
+                        q: "Why is the nucleus of the atom described as positively charged?",
+                        choices: ["Due to the presence of protons", "Due to electrons", "Due to neutrons"],
+                        correct: 0,
+                        hint: "Protons are positive, neutrons are neutral.",
+                        feedback: "Correct! Because of positive protons."
+                    },
+                    {
+                        q: "Why is the mass of the atom concentrated in the nucleus?",
+                        choices: ["Because protons and neutrons are much heavier than electrons", "Because electrons are heavy", "Because the nucleus is large"],
+                        correct: 0,
+                        hint: "Electrons have negligible mass.",
+                        feedback: "Spot on! Subatomic particle mass concentration."
+                    },
+                    {
+                        q: "The difference between the mass number A and atomic number Z equals:",
+                        choices: ["The number of neutrons", "The number of protons", "The number of electrons"],
+                        correct: 0,
+                        hint: "A - Z = N.",
+                        feedback: "Right! Number of neutrons."
+                    },
+                    {
+                        q: "What is the chemical symbol of Lithium?",
+                        choices: ["Li", "Na", "K", "Mg"],
+                        correct: 0,
+                        hint: "Alkali metal in period 2.",
+                        feedback: "Correct! Li."
+                    },
+                    {
+                        q: "What is the chemical symbol of Bromine?",
+                        choices: ["Br", "B", "Ba", "Bi"],
+                        correct: 0,
+                        hint: "Halogen element.",
+                        feedback: "Spot on! Br."
+                    },
+                    {
+                        q: "The scientist who formulated the first scientific theory about the atom was:",
+                        choices: ["Dalton", "Rutherford", "Bohr", "Thomson"],
+                        correct: 0,
+                        hint: "Early 19th-century English chemist.",
+                        feedback: "Right! Dalton."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Quest 4: Plant Science & Elements",
+                icon: "🌿",
+                color: "bg-lavender",
+                description: "Master plant nutrients, chemical symbols, and agricultural chemistry!",
+                questions: [
+                    {
+                        q: "The element necessary for the greening of plant leaves is:",
+                        choices: ["Magnesium", "Potassium", "Phosphorus", "Calcium"],
+                        correct: 0,
+                        hint: "Central atom in chlorophyll.",
+                        feedback: "Correct! Magnesium is essential for chlorophyll."
+                    },
+                    {
+                        q: "The element responsible for developing strong roots and fruit growth is:",
+                        choices: ["Phosphorus", "Nitrogen", "Carbon", "Sulfur"],
+                        correct: 0,
+                        hint: "P in NPK fertilizers.",
+                        feedback: "Spot on! Phosphorus."
+                    },
+                    {
+                        q: "Potassium is an element necessary for:",
+                        choices: ["Healthy growth of the plant and strong stems", "Leaf greening", "Root absorption"],
+                        correct: 0,
+                        hint: "Helps regulate plant processes.",
+                        feedback: "Right! Healthy plant growth."
+                    },
+                    {
+                        q: "Limestone rock is composed of a substance whose chemical name is:",
+                        choices: ["Calcium carbonate", "Sodium chloride", "Potassium nitrate"],
+                        correct: 0,
+                        hint: "CaCO<sub>3</sub>.",
+                        feedback: "Correct! Calcium carbonate."
+                    },
+                    {
+                        q: "The chemical symbol of the potassium element is:",
+                        choices: ["K", "P", "Pt", "Po"],
+                        correct: 0,
+                        hint: "Derived from its Latin name Kalium.",
+                        feedback: "Spot on! K."
+                    },
+                    {
+                        q: "The chemical symbol of sodium is Na, which comes from its Latin name:",
+                        choices: ["Natrium", "Nitron", "Sodium"],
+                        correct: 0,
+                        hint: "Not So as expected!",
+                        feedback: "Right! Natrium."
+                    },
+                    {
+                        q: "Chemical compounds used to improve agricultural crops are called:",
+                        choices: ["Fertilizers", "Pesticides", "Solvents"],
+                        correct: 0,
+                        hint: "NPK are types of these.",
+                        feedback: "Correct! Fertilizers."
+                    },
+                    {
+                        q: "Why is it advised not to use fertilizers excessively in agriculture?",
+                        choices: ["It harms the environment and crops", "It makes plants grow too fast", "It is expensive"],
+                        correct: 0,
+                        hint: "Excess chemicals can damage ecosystems.",
+                        feedback: "Spot on! Excessive use harms agricultural crops."
+                    },
+                    {
+                        q: "What is the chemical symbol for Nitrogen?",
+                        choices: ["N", "Na", "Ni", "Ne"],
+                        correct: 0,
+                        hint: "First letter of nitrogen.",
+                        feedback: "Right! N."
+                    },
+                    {
+                        q: "What is the chemical symbol for Sulphur?",
+                        choices: ["S", "Si", "So", "Sn"],
+                        correct: 0,
+                        hint: "Letter S.",
+                        feedback: "Correct! S."
+                    },
+                    {
+                        q: "What is the chemical symbol for Silicon?",
+                        choices: ["Si", "S", "Sn", "Sb"],
+                        correct: 0,
+                        hint: "S-i.",
+                        feedback: "Spot on! Si."
+                    },
+                    {
+                        q: "What is the chemical symbol for Carbon?",
+                        choices: ["C", "Ca", "Co", "Cl"],
+                        correct: 0,
+                        hint: "Letter C.",
+                        feedback: "Right! C."
+                    },
+                    {
+                        q: "What is the chemical symbol for Hydrogen?",
+                        choices: ["H", "He", "Hg", "Hf"],
+                        correct: 0,
+                        hint: "Letter H.",
+                        feedback: "Correct! H."
+                    },
+                    {
+                        q: "What is the chemical symbol for Aluminum?",
+                        choices: ["Al", "Am", "Ar", "Au"],
+                        correct: 0,
+                        hint: "A-l.",
+                        feedback: "Spot on! Al."
+                    },
+                    {
+                        q: "What is the chemical symbol for Gold?",
+                        choices: ["Au", "Ag", "Al", "G"],
+                        correct: 0,
+                        hint: "From Latin Aurum.",
+                        feedback: "Right! Au."
+                    },
+                    {
+                        q: "What is the chemical symbol for Copper?",
+                        choices: ["Cu", "Co", "C", "Ca"],
+                        correct: 0,
+                        hint: "From Latin Cuprum.",
+                        feedback: "Correct! Cu."
+                    },
+                    {
+                        q: "What is the chemical symbol for Zinc?",
+                        choices: ["Zn", "Z", "Zr", "Zi"],
+                        correct: 0,
+                        hint: "Z-n.",
+                        feedback: "Spot on! Zn."
+                    },
+                    {
+                        q: "What is the chemical symbol for Iron?",
+                        choices: ["Fe", "I", "In", "Ir"],
+                        correct: 0,
+                        hint: "From Latin Ferrum.",
+                        feedback: "Right! Fe."
+                    },
+                    {
+                        q: "What is the chemical symbol for Oxygen?",
+                        choices: ["O", "Ox", "Om", "Os"],
+                        correct: 0,
+                        hint: "Letter O.",
+                        feedback: "Correct! O."
+                    },
+                    {
+                        q: "What is the chemical symbol for Chlorine?",
+                        choices: ["Cl", "C", "Ch", "Co"],
+                        correct: 0,
+                        hint: "C-l.",
+                        feedback: "Spot on! Cl."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Quest 5: Science Grandmaster",
+                icon: "👑",
+                color: "bg-butter",
+                description: "The ultimate challenge covering all concepts from atoms to agriculture!",
+                questions: [
+                    {
+                        q: "The Sphinx statue is composed of which rock?",
+                        choices: ["Sandstone", "Limestone", "Granite"],
+                        correct: 0,
+                        hint: "A sedimentary rock made of sand grains.",
+                        feedback: "Correct! Sandstone rock."
+                    },
+                    {
+                        q: "The masses of subatomic components are measured in what unit?",
+                        choices: ["Atomic mass unit (amu)", "Gram", "Milliliter"],
+                        correct: 0,
+                        hint: "Very tiny scale for atoms.",
+                        feedback: "Spot on! Atomic mass unit."
+                    },
+                    {
+                        q: "The chemical symbol of potassium is K, while phosphorus is:",
+                        choices: ["P", "Po", "Pt", "Pb"],
+                        correct: 0,
+                        hint: "Single letter P.",
+                        feedback: "Right! Phosphorus is P."
+                    },
+                    {
+                        q: "In the nucleus of magnesium <sup>24</sup><sub>12</sub>Mg, the number of protons is .......... the number of neutrons.",
+                        choices: ["Equal to (12 protons and 12 neutrons)", "Double", "Half"],
+                        correct: 0,
+                        hint: "24 minus 12 = 12 neutrons.",
+                        feedback: "Correct! Equal to 12 each."
+                    },
+                    {
+                        q: "The mass number is half the atomic number in the nitrogen atom <sup>14</sup><sub>7</sub>N? (True/False statement correction)",
+                        choices: ["Mass number is double atomic number (14 vs 7)", "Mass number equals atomic number", "Correct as is"],
+                        correct: 0,
+                        hint: "14 is double 7, not half.",
+                        feedback: "Spot on! Mass number is double the atomic number."
+                    },
+                    {
+                        q: "Neutrons are neutral particles found inside the .......... of the atom.",
+                        choices: ["Nucleus", "Energy levels", "Electron cloud"],
+                        correct: 0,
+                        hint: "They live with protons in the center.",
+                        feedback: "Right! Inside the nucleus."
+                    },
+                    {
+                        q: "Both the proton and the neutron have approximately the same:",
+                        choices: ["Mass", "Charge", "Location"],
+                        correct: 0,
+                        hint: "Both weigh about 1 amu.",
+                        feedback: "Correct! Same mass."
+                    },
+                    {
+                        q: "What are the elements composing calcium carbonate?",
+                        choices: ["Calcium, Carbon, Oxygen", "Calcium, Chlorine, Oxygen", "Carbon, Nitrogen, Potassium"],
+                        correct: 0,
+                        hint: "CaCO<sub>3</sub>.",
+                        feedback: "Spot on! Calcium, Carbon, and Oxygen."
+                    },
+                    {
+                        q: "If an element has atomic number 11 and mass number 23, its number of electrons equals:",
+                        choices: ["11", "12", "23", "34"],
+                        correct: 0,
+                        hint: "Electrons equal atomic number in neutral state.",
+                        feedback: "Right! 11 electrons."
+                    },
+                    {
+                        q: "Calculate the atomic number of an element if its nucleons count is 27 and neutrons count is 14:",
+                        choices: ["13", "14", "27", "41"],
+                        correct: 0,
+                        hint: "27 minus 14.",
+                        feedback: "Correct! 13."
+                    },
+                    {
+                        q: "An element whose mass number is 40 and neutrons count is 20 has how many electrons?",
+                        choices: ["20", "40", "60", "10"],
+                        correct: 0,
+                        hint: "40 - 20 = 20 protons = 20 electrons.",
+                        feedback: "Spot on! 20 electrons."
+                    },
+                    {
+                        q: "What is the main contribution of scientist Rutherford?",
+                        choices: ["Discovered the atomic nucleus and proton structure", "First atomic theory", "Discovered electron"],
+                        correct: 0,
+                        hint: "Gold foil experiment.",
+                        feedback: "Right! Discovered the atomic nucleus."
+                    },
+                    {
+                        q: "Subatomic particles whose mass or charge cannot be neglected are:",
+                        choices: ["Protons and neutrons", "Electrons only", "All particles"],
+                        correct: 0,
+                        hint: "Nucleons carry almost all the mass.",
+                        feedback: "Correct! Protons and neutrons."
+                    },
+                    {
+                        q: "The subatomic particle that has the smallest mass is the:",
+                        choices: ["Electron", "Proton", "Neutron"],
+                        correct: 0,
+                        hint: "About 1/1836th of a proton's mass.",
+                        feedback: "Spot on! Electron."
+                    },
+                    {
+                        q: "What is the chemical symbol for Lead?",
+                        choices: ["Pb", "P", "Pt", "Pd"],
+                        correct: 0,
+                        hint: "From Latin Plumbum.",
+                        feedback: "Right! Pb."
+                    },
+                    {
+                        q: "What is the chemical symbol for Chromium?",
+                        choices: ["Cr", "C", "Cm", "Ch"],
+                        correct: 0,
+                        hint: "C-r.",
+                        feedback: "Correct! Cr."
+                    },
+                    {
+                        q: "What is the chemical symbol for Fluorine?",
+                        choices: ["F", "Fl", "Fe", "Fo"],
+                        correct: 0,
+                        hint: "Letter F.",
+                        feedback: "Spot on! F."
+                    },
+                    {
+                        q: "What is the chemical symbol for Zinc?",
+                        choices: ["Zn", "Zi", "Z", "Zr"],
+                        correct: 0,
+                        hint: "Z-n.",
+                        feedback: "Right! Zn."
+                    },
+                    {
+                        q: "What is the chemical symbol for Calcium?",
+                        choices: ["Ca", "C", "Cl", "Co"],
+                        correct: 0,
+                        hint: "C-a.",
+                        feedback: "Correct! Ca."
+                    },
+                    {
+                        q: "The building unit of limestone rock is:",
+                        choices: ["Calcium carbonate molecules", "Sand grains", "Water molecules"],
+                        correct: 0,
+                        hint: "CaCO<sub>3</sub> formula units.",
+                        feedback: "Spot on! Calcium carbonate molecules."
+                    }
+                ]
+            }
+        ];
+
+        let currentScreen = 'home';
+        let currentQuizIndex = 0;
+        let currentQuestionIndex = 0;
+        let shuffledQuestions = [];
+        let currentChoices = [];
+        let score = 0;
+        let selectedChoiceIndex = null;
+        let isAnswerSubmitted = false;
+        let hintUsed = false;
+        let autoAdvanceTimer = null;
+        let questionReadTimer = null;
+        let choiceRevealInterval = null;
+
+        let settings = {
+            sound: true,
+            motion: false,
+            largeText: false
+        };
+
+        // --- STAGED QUESTION TIMING CONFIGURATION (Ultra-Smooth) ---
+        const TIMING_CONFIG = {
+            readingPause: 2200,    // 2.2-second reading pause
+            choiceInterval: 280    // Smooth cascading reveal interval between each choice card
+        };
+
+        let choicesRevealedCount = 0;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!settings.sound) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                gainNode.gain.setValueAtTime(0.12, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'incorrect') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(180, now + 0.15);
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+
+        function goToHome() {
+            playSound('click');
+            clearAllTimers();
+            currentScreen = 'home';
+            document.getElementById('quiz-header-info').classList.add('hidden');
+            render();
+        }
+
+        function startQuiz(quizIndex) {
+            playSound('click');
+            currentQuizIndex = quizIndex;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            const originalQuestions = quizzesData[quizIndex].questions;
+            shuffledQuestions = [...originalQuestions].sort(() => Math.random() - 0.5);
+            
+            currentScreen = 'quiz';
+            document.getElementById('quiz-header-info').classList.remove('hidden');
+            document.getElementById('topic-badge').innerText = quizzesData[quizIndex].title;
+            
+            prepareCurrentQuestion();
+        }
+
+        function clearAllTimers() {
+            if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+            if (questionReadTimer) clearTimeout(questionReadTimer);
+            if (choiceRevealInterval) clearTimeout(choiceRevealInterval);
+            autoAdvanceTimer = null;
+            questionReadTimer = null;
+            choiceRevealInterval = null;
+        }
+
+        function prepareCurrentQuestion() {
+            clearAllTimers();
+
+            const qData = shuffledQuestions[currentQuestionIndex];
+            selectedChoiceIndex = null;
+            isAnswerSubmitted = false;
+            hintUsed = false;
+            choicesRevealedCount = 0;
+
+            let indexedChoices = qData.choices.map((text, idx) => ({ text, originalIdx: idx }));
+            indexedChoices.sort(() => Math.random() - 0.5);
+            currentChoices = indexedChoices;
+
+            render();
+            startStagedReveal();
+        }
+
+        function startStagedReveal() {
+            questionReadTimer = setTimeout(() => {
+                revealNextChoiceBatch();
+            }, TIMING_CONFIG.readingPause);
+        }
+
+        function revealNextChoiceBatch() {
+            if (choicesRevealedCount < currentChoices.length) {
+                choicesRevealedCount++;
+                playSound('click');
+                render();
+                if (choicesRevealedCount < currentChoices.length) {
+                    choiceRevealInterval = setTimeout(revealNextChoiceBatch, TIMING_CONFIG.choiceInterval);
+                }
+            }
+        }
+
+        function selectChoice(choiceIndex) {
+            if (isAnswerSubmitted) return;
+            
+            if (choicesRevealedCount < currentChoices.length) {
+                clearAllTimers();
+                choicesRevealedCount = currentChoices.length;
+            }
+
+            isAnswerSubmitted = true;
+            selectedChoiceIndex = choiceIndex;
+            
+            const qData = shuffledQuestions[currentQuestionIndex];
+            const chosenObj = currentChoices[choiceIndex];
+            const feedbackEl = document.getElementById('feedback-container');
+
+            if (chosenObj.originalIdx === qData.correct) {
+                score++;
+                playSound('correct');
+                if (feedbackEl) {
+                    feedbackEl.innerHTML = `<span class="text-successgreen animate-pop">✅ ${qData.feedback}</span>`;
+                }
+                autoAdvanceTimer = setTimeout(() => {
+                    nextQuestion();
+                }, 1000);
+            } else {
+                playSound('incorrect');
+                const correctChoiceText = qData.choices[qData.correct];
+                if (feedbackEl) {
+                    feedbackEl.innerHTML = `<span class="text-errorcoral animate-pop">❌ Not quite! Correct answer: <strong>${correctChoiceText}</strong></span>`;
+                }
+                autoAdvanceTimer = setTimeout(() => {
+                    nextQuestion();
+                }, 2200);
+            }
+
+            render();
+        }
+
+        function nextQuestion() {
+            clearAllTimers();
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                prepareCurrentQuestion();
+                render();
+            } else {
+                currentScreen = 'results';
+                document.getElementById('quiz-header-info').classList.add('hidden');
+                render();
+            }
+        }
+
+        function showHint() {
+            playSound('click');
+            hintUsed = true;
+            const qData = shuffledQuestions[currentQuestionIndex];
+            const hintBox = document.getElementById('hint-box');
+            const hintText = document.getElementById('hint-text');
+            if (hintBox && hintText) {
+                hintText.innerText = qData.hint;
+                hintBox.classList.remove('hidden');
+            }
+        }
+
+        function render() {
+            const mainContent = document.getElementById('main-content');
+            const textSizeClass = settings.largeText ? 'text-lg sm:text-xl' : 'text-base sm:text-lg';
+
+            if (currentScreen === 'home') {
+                let html = `
+                    <div class="text-center w-full max-w-2xl mx-auto animate-pop">
+                        <!-- Upgraded and bigger Mammoth Mascot Icon -->
+                        <div class="inline-flex items-center justify-center p-8 mb-6 clay-card bg-butter rounded-3xl animate-bounce-gentle shadow-2xl border-4 border-white/90">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-28 h-28 sm:w-36 sm:h-36 drop-shadow-md fill-darkbrown">
+                                <!-- Mammoth Head, Tusks, Trunk and Ears Cartoon SVG -->
+                                <path d="M256 32C150 32 64 118 64 224c0 44 15 85 41 118l-18 54c-4 12 7 23 19 19l58-19c31 21 68 34 108 34 106 0 192-86 192-192S362 32 256 32zm-96 112c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zm192 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zm-96 64c-35.3 0-64 28.7-64 64 0 25.4 14.8 47.4 36.3 57.9l-11.4 34.1c-3.1 9.4 5.3 17.8 14.7 14.7l38.4-12.8c11.7 2.3 23.9 3.5 36 3.5 70.7 0 128-57.3 128-128s-57.3-128-128-128z"/>
+                                <!-- Gentle trunk curve highlight -->
+                                <path d="M224 288c0 17.7 14.3 32 32 32s32-14.3 32-32-14.3-32-32-32-32 14.3-32 32z" opacity="0.2"/>
+                            </svg>
+                        </div>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold text-darkbrown mb-3">
+                            The Mammoth Science Adventure
+                        </h1>
+                        <p class="text-graybrown ${textSizeClass} font-medium mb-8">
+                            Choose a quest below to explore atoms, elements, and exciting science discoveries!
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                `;
+
+                quizzesData.forEach((quiz, index) => {
+                    html += `
+                        <div onclick="startQuiz(${index})" class="clay-card clay-card-interactive ${quiz.color} p-5 cursor-pointer flex items-center gap-4 border-4 border-white/50">
+                            <div class="text-4xl p-3 bg-white/60 rounded-2xl shadow-inner flex items-center justify-center">
+                                ${quiz.icon}
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg sm:text-xl font-extrabold text-darkbrown">${quiz.title}</h3>
+                                <p class="text-xs sm:text-sm text-graybrown font-medium mt-1">${quiz.description}</p>
+                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-white/70 text-darkbrown rounded-full text-xs font-bold">20 Questions</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+                mainContent.innerHTML = html;
+
+            } else if (currentScreen === 'quiz') {
+                const qData = shuffledQuestions[currentQuestionIndex];
+                const progressPct = ((currentQuestionIndex) / shuffledQuestions.length) * 100;
+
+                let html = `
+                    <div class="w-full max-w-2xl mx-auto flex flex-col items-center animate-pop">
+                        <!-- Progress bar -->
+                        <div class="w-full mb-4">
+                            <div class="flex justify-between text-xs sm:text-sm font-extrabold text-graybrown mb-1">
+                                <span>Question ${currentQuestionIndex + 1} of ${shuffledQuestions.length}</span>
+                                <span>Score: ${score}</span>
+                            </div>
+                            <div class="w-full bg-peach h-3.5 rounded-full overflow-hidden shadow-inner p-0.5">
+                                <div class="bg-successgreen h-full rounded-full transition-all duration-300" style="width: ${progressPct}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Question Card -->
+                        <div class="clay-card bg-peach w-full p-6 sm:p-8 mb-6 border-4 border-white/60 text-center relative">
+                            <div class="absolute top-4 right-4 flex gap-2">
+                                <button onclick="showHint()" class="clay-button px-3 py-1 bg-butter text-darkbrown text-xs font-bold flex items-center gap-1 cursor-pointer">
+                                    💡 Hint
+                                </button>
+                            </div>
+                            <span class="inline-block px-3 py-1 bg-white/60 rounded-full text-xs font-extrabold text-darkbrown mb-3">
+                                ${quizzesData[currentQuizIndex].title}
+                            </span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-darkbrown leading-snug">
+                                ${qData.q}
+                            </h2>
+
+                            <!-- Hint box -->
+                            <div id="hint-box" class="hidden mt-4 p-3 bg-butter/80 rounded-2xl text-xs sm:text-sm font-bold text-darkbrown animate-pop">
+                                💡 <span id="hint-text"></span>
+                            </div>
+                        </div>
+
+                        <!-- Answer Choices Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-4">
+                `;
+
+                currentChoices.forEach((choice, idx) => {
+                    const isVisible = idx < choicesRevealedCount;
+                    if (!isVisible) {
+                        html += `<div class="h-16 opacity-0 pointer-events-none"></div>`;
+                        return;
+                    }
+
+                    let cardStyle = "bg-skyblue border-white/70";
+                    let extraClass = "clay-card-interactive cursor-pointer animate-slide-up";
+
+                    if (isAnswerSubmitted) {
+                        if (choice.originalIdx === qData.correct) {
+                            cardStyle = "bg-successgreen text-white border-white scale-105 shadow-lg";
+                        } else if (idx === selectedChoiceIndex) {
+                            cardStyle = "bg-errorcoral text-white border-white animate-wobble";
+                        } else {
+                            cardStyle = "bg-white/40 opacity-60";
+                        }
+                        extraClass = "";
+                    }
+
+                    html += `
+                        <div onclick="selectChoice(${idx})" class="clay-card ${cardStyle} ${extraClass} p-4 sm:p-5 border-4 flex items-center justify-center text-center">
+                            <span class="font-extrabold ${textSizeClass} text-darkbrown">${choice.text}</span>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+
+                        <!-- Feedback Area -->
+                        <div id="feedback-container" class="h-8 text-center font-extrabold text-sm sm:text-base"></div>
+                    </div>
+                `;
+                mainContent.innerHTML = html;
+
+            } else if (currentScreen === 'results') {
+                const percentage = Math.round((score / shuffledQuestions.length) * 100);
+                let badgeEmoji = "🌟";
+                let badgeTitle = "Super Scientist!";
+                if (percentage === 100) {
+                    badgeEmoji = "👑";
+                    badgeTitle = "Science Grandmaster!";
+                } else if (percentage < 60) {
+                    badgeEmoji = "🌱";
+                    badgeTitle = "Keep Exploring!";
+                }
+
+                let html = `
+                    <div class="text-center w-full max-w-lg mx-auto clay-card bg-peach p-8 sm:p-10 border-4 border-white animate-pop">
+                        <div class="text-6xl mb-4 animate-bounce-gentle">${badgeEmoji}</div>
+                        <h2 class="text-3xl font-extrabold text-darkbrown mb-2">${badgeTitle}</h2>
+                        <p class="text-graybrown font-medium mb-6">You finished ${quizzesData[currentQuizIndex].title}!</p>
+                        
+                        <div class="clay-card bg-cream p-6 mb-8 border-2 border-white">
+                            <div class="text-4xl font-extrabold text-successgreen mb-1">${score} / ${shuffledQuestions.length}</div>
+                            <div class="text-sm font-bold text-graybrown">Correct Answers (${percentage}%)</div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="startQuiz(currentQuizIndex)" class="clay-button px-6 py-3 bg-butter text-darkbrown font-extrabold text-base cursor-pointer">
+                                🔄 Play Again
+                            </button>
+                            <button onclick="goToHome()" class="clay-button px-6 py-3 bg-skyblue text-darkbrown font-extrabold text-base cursor-pointer">
+                                🏠 Choose Another Quest
+                            </button>
+                        </div>
+                    </div>
+                `;
+                mainContent.innerHTML = html;
+            }
+        }
+
+        // --- MODALS & SETTINGS ---
+        function openSettings() {
+            playSound('click');
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            playSound('click');
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function updateSettings() {
+            settings.sound = document.getElementById('setting-sound').checked;
+            settings.motion = document.getElementById('setting-motion').checked;
+            settings.largeText = document.getElementById('setting-text').checked;
+            
+            const btn = document.getElementById('sound-btn');
+            btn.innerText = settings.sound ? '🔊' : '🔇';
+            render();
+        }
+
+        // Initial launch
+        window.onload = function() {
+            render();
+        };
+    </script>
+</body>
+</html>
